@@ -1,0 +1,10 @@
+id: warmup-strings
+name: "Warmup: Strings Attached"
+category: misc
+difficulty: easy
+flag_sha256: adeb07576eb34ca9247a7dde12f7eac2a2410f7ec88c1cb9c65db4a7f32ac224
+description: |
+  We recovered a mystery binary blob from an old USB stick. Most of it looks like
+  random noise, but someone swears there's something readable in there.
+files:
+  - files/mystery.bin

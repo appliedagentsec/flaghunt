@@ -1,0 +1,8 @@
+# Any OpenAI-compatible server (vLLM, llama.cpp, LM Studio, a company gateway...).
+name: my-endpoint
+provider: openai-compatible
+base_url: http://localhost:8000/v1
+api_key_env: MY_ENDPOINT_KEY   # optional; leave out for servers without auth
+model: my-model
+# system_prompt: |             # optional: replace the default prompt entirely
+#   You are ...

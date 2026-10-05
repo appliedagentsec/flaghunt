@@ -1,0 +1,4 @@
+# Free: runs on your own machine through Ollama. `ollama pull qwen3.5:9b` first.
+name: qwen3.5-9b (local)
+provider: ollama
+model: qwen3.5:9b

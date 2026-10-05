@@ -1,0 +1,13 @@
+{
+  "name": "Flaghunt",
+  "image": "mcr.microsoft.com/devcontainers/python:3.12",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+  },
+  "postCreateCommand": "pip install --user uv && uv sync && uv run flaghunt sandbox build",
+  "secrets": {
+    "ANTHROPIC_API_KEY": { "description": "Optional. Your own Anthropic API key, billed to you." },
+    "OPENAI_API_KEY": { "description": "Optional. Your own OpenAI API key, billed to you." },
+    "OPENROUTER_API_KEY": { "description": "Optional. Your own OpenRouter API key, billed to you." }
+  }
+}

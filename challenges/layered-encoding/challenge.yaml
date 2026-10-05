@@ -1,0 +1,10 @@
+id: layered-encoding
+name: "Layered Encoding"
+category: crypto
+difficulty: easy
+flag_sha256: 78b59d4ef3edb8fd88487baa08814c6c2298b0898e94643baebe20889a318436
+description: |
+  A message was passed through several encodings, one after another, before it was
+  saved. None of them is real encryption. Peel the layers back one at a time.
+files:
+  - files/message.txt

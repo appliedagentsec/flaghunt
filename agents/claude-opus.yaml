@@ -1,0 +1,9 @@
+# Uses your own ANTHROPIC_API_KEY (or `ant auth login`). Billed to your account.
+name: claude-opus-5.5
+provider: anthropic
+model: claude-opus-5-5
+effort: medium        # low | medium | high | xhigh | max
+max_tokens: 16000
+# If a safety classifier declines, the API retries on Anthropic's recommended
+# fallback model. The model that actually answered is recorded per step.
+fallbacks: default

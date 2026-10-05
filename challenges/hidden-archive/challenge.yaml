@@ -1,0 +1,10 @@
+id: hidden-archive
+name: "Not Just a Picture"
+category: forensics
+difficulty: medium
+flag_sha256: e74c71ab315debb25783340ac362efb6265e3e4af06f3991d0eda85547ae0585
+description: |
+  This image of a gradient was attached to a suspicious email. It opens fine in an
+  image viewer, but the file seems bigger than an image this simple should be.
+files:
+  - files/gradient.png

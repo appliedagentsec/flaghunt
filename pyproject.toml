@@ -1,0 +1,35 @@
+[project]
+name = "flaghunt"
+version = "0.1.0"
+description = "A sandboxed harness for benchmarking AI agents on capture-the-flag challenges."
+readme = "README.md"
+authors = [
+    { name = "Andrey", email = "254573315+oeirughrepuiohg@users.noreply.github.com" }
+]
+license = "MIT"
+requires-python = ">=3.11"
+dependencies = [
+    "anthropic>=0.80",
+    "openai>=1.60",
+    "pyyaml>=6.0",
+]
+
+[project.urls]
+Repository = "https://github.com/appliedagentsec/flaghunt"
+
+[project.scripts]
+flaghunt = "flaghunt.cli:main"
+
+[dependency-groups]
+dev = ["pytest>=8.0"]
+
+[build-system]
+requires = ["uv_build>=0.12.19,<0.13.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "flaghunt"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["docker: needs a working Docker (or Podman) daemon"]
