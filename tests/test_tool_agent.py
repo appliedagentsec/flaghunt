@@ -104,3 +104,23 @@ def test_step_budget_is_enforced(monkeypatch, tmp_path):
     with pytest.raises(OutOfBudget):
         run_agent(monkeypatch, task, [Turn(stop="tool_use", tool_calls=[call("shell", command="ls")])] * 5)
     assert len(sandbox.commands) == 2
+
+
+def test_warns_once_when_server_truncates_context(monkeypatch, tmp_path):
+    task, _ = make_task(tmp_path)
+    shell = lambda n: Turn(stop="tool_use", tool_calls=[call("shell", command="ls")], input_tokens=n)
+    run_agent(monkeypatch, task, [
+        shell(500), shell(4000), shell(3500), shell(3900), shell(3200),
+        Turn(stop="tool_use", tool_calls=[call("submit_flag", flag=FLAG)], input_tokens=4000),
+    ])
+    notes = [e["text"] for e in task.transcript.events if e["type"] == "note"]
+    assert len(notes) == 1 and "4,000 to 3,500" in notes[0]
+
+
+def test_growing_prompts_do_not_warn(monkeypatch, tmp_path):
+    task, _ = make_task(tmp_path)
+    run_agent(monkeypatch, task, [
+        Turn(stop="tool_use", tool_calls=[call("shell", command="ls")], input_tokens=500),
+        Turn(stop="tool_use", tool_calls=[call("submit_flag", flag=FLAG)], input_tokens=900),
+    ])
+    assert not [e for e in task.transcript.events if e["type"] == "note"]

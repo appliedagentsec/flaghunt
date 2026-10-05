@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "started_at": "2026-10-05T02:06:36+00:00",
+  "started_at": "2026-10-05T02:54:39+00:00",
   "duration_s": 0.3,
   "agent": {
     "name": "baseline-grep",
@@ -14,8 +14,8 @@
     }
   },
   "challenge": {
-    "id": "hidden-archive",
-    "name": "Not Just a Picture",
+    "id": "quiet-pixels",
+    "name": "Quiet Pixels",
     "category": "forensics",
     "difficulty": "medium"
   },

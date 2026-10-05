@@ -1,4 +1,8 @@
-# Free: runs on your own machine through Ollama. `ollama pull qwen3.5:9b` first.
+# Free: runs on your own machine through Ollama, with a 16k context window.
+# Ollama's default 4k context silently drops earlier steps, so create the
+# variant first:
+#   ollama pull qwen3.5:9b
+#   ollama create qwen3.5-9b-16k -f agents/ollama/qwen3.5-9b-16k.Modelfile
 name: qwen3.5-9b (local)
 provider: ollama
-model: qwen3.5:9b
+model: qwen3.5-9b-16k

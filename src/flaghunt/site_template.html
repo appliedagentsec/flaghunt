@@ -84,8 +84,8 @@ header.hero { padding-block: 56px 0; display: grid; gap: 18px; }
 .zone-tag { font: 600 0.7rem/1 var(--font-body); letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
 .zone h3 { font-size: 1.15rem; }
 .zone ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; font-size: 0.9rem; }
-.zone li { display: grid; grid-template-columns: 14px 1fr; gap: 8px; align-items: baseline; }
-.zone li::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); transform: translateY(-2px); }
+.zone li { position: relative; padding-left: 18px; }
+.zone li::before { content: ""; position: absolute; left: 2px; top: 0.6em; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
 .zone.sandbox li::before { background: var(--term-dim); }
 .zone.sandbox code { color: #9fb4ff; }
 .link { display: grid; align-content: center; gap: 10px; padding-inline: 6px; font-size: 0.72rem; color: var(--muted); text-align: center; line-height: 1.3; }
@@ -102,13 +102,17 @@ header.hero { padding-block: 56px 0; display: grid; gap: 18px; }
 
 /* Results board */
 .board-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
-table.board { border-collapse: collapse; width: 100%; min-width: 640px; font-size: 0.92rem; }
+table.board { border-collapse: collapse; width: 100%; min-width: 520px; font-size: 0.92rem; }
 .board th, .board td { padding: 12px 14px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: middle; }
 .board tr:last-child td { border-bottom: 0; }
 .board thead th { font-weight: 500; color: var(--muted); font-size: 0.8rem; background: var(--sunken); }
 .board thead th small { display: block; font-family: var(--font-mono); font-size: 0.72rem; }
 .board .agent { font-weight: 600; }
 .board .agent small { display: block; font-weight: 400; color: var(--muted); font-size: 0.8rem; }
+.board tbody th { font-weight: 600; }
+.board tbody th small { display: block; font: 400 0.75rem/1.4 var(--font-mono); color: var(--muted); }
+.board tfoot td, .board tfoot th { background: var(--sunken); border-bottom: 0; border-top: 1px solid var(--line); }
+.board .group th { background: var(--bg); color: var(--muted); font: 600 0.7rem/1 var(--font-body); letter-spacing: 0.12em; text-transform: uppercase; padding-block: 10px; }
 .board .score { font: 750 1.2rem/1 var(--font-display); font-variant-numeric: tabular-nums; }
 .chip { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 999px; font: 600 0.78rem/1 var(--font-body); border: 1px solid transparent; cursor: pointer; background: none; color: inherit; white-space: nowrap; }
 .chip:focus-visible, button:focus-visible, select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
@@ -273,8 +277,8 @@ a { color: var(--accent); text-underline-offset: 3px; }
   <section aria-labelledby="results">
     <div class="section-head">
       <span class="eyebrow">First results</span>
-      <h2 id="results">Two agents, four challenges</h2>
-      <p>A scripted baseline that only greps for the flag, against a free 9-billion-parameter model running locally through Ollama. Select any result to replay it below.</p>
+      <h2 id="results"></h2>
+      <p>Every agent attempts every challenge under the same budget. The scripted baseline only searches the files for text shaped like a flag, so any agent worth running should beat it. Select a result to replay it below.</p>
     </div>
     <div class="board-wrap"><table class="board" id="board"></table></div>
   </section>
@@ -410,25 +414,35 @@ function renderFacts() {
   const steps = RUNS.reduce((s, r) => s + r.steps, 0);
   const tokens = RUNS.reduce((s, r) => s + r.usage.input_tokens + r.usage.output_tokens, 0);
   $("facts").innerHTML = [
-    [challenges.length, "challenges"], [agents.length, "agents"], [RUNS.length, "recorded runs"],
+    [challenges.length, challenges.length === 1 ? "challenge" : "challenges"],
+    [agents.length, agents.length === 1 ? "agent" : "agents"], [RUNS.length, "recorded runs"],
     [steps, "sandbox commands"], [fmt(tokens), "model tokens"],
   ].map(([n, l]) => `<span><b>${n}</b> ${l}</span>`).join("");
 }
 
 function renderBoard() {
-  const head = `<thead><tr><th scope="col">Agent</th><th scope="col">Solved</th>${challenges
-    .map((c) => `<th scope="col">${esc(c.name)}<small>${esc(c.category)} · ${esc(c.difficulty)}</small></th>`).join("")}</tr></thead>`;
-  const rows = agents.map((a) => {
-    const cells = challenges.map((c) => {
+  const plural = (n, word) => `${n} ${word}${n === 1 ? "" : "s"}`;
+  $("results").textContent = `${plural(agents.length, "agent")}, ${plural(challenges.length, "challenge")}`;
+  const head = `<thead><tr><th scope="col">Challenge</th>${agents.map((a) =>
+    `<th scope="col" class="agent">${esc(a.name)}<small>${a.model ? esc(a.provider) + " · " + esc(a.model) : "scripted, no model"}</small></th>`).join("")}</tr></thead>`;
+  let rows = "";
+  let group = null;
+  for (const c of challenges) {
+    if (c.difficulty !== group) {
+      group = c.difficulty;
+      rows += `<tr class="group"><th colspan="${agents.length + 1}" scope="rowgroup">${esc(group)}</th></tr>`;
+    }
+    const cells = agents.map((a) => {
       const i = RUNS.findIndex((r) => r.agent.name === a.name && r.challenge.id === c.id);
       if (i < 0) return `<td>—</td>`;
       const r = RUNS[i];
       return `<td><button class="chip ${r.outcome}" type="button" data-run="${i}" aria-pressed="false">${OUTCOME[r.outcome] || r.outcome}<span class="n">· ${r.steps} step${r.steps === 1 ? "" : "s"}</span></button></td>`;
     }).join("");
-    const kind = a.model ? `${esc(a.provider)} · ${esc(a.model)}` : "scripted, no model";
-    return `<tr><th scope="row" class="agent">${esc(a.name)}<small>${kind}</small></th><td class="score">${solvedBy(a.name)}/${challenges.length}</td>${cells}</tr>`;
-  }).join("");
-  $("board").innerHTML = head + `<tbody>${rows}</tbody>`;
+    rows += `<tr><th scope="row">${esc(c.name)}<small>${esc(c.category)}</small></th>${cells}</tr>`;
+  }
+  const foot = `<tfoot><tr><th scope="row">Solved</th>${agents.map((a) =>
+    `<td class="score">${solvedBy(a.name)}/${challenges.length}</td>`).join("")}</tr></tfoot>`;
+  $("board").innerHTML = head + `<tbody>${rows}</tbody>` + foot;
   $("board").addEventListener("click", (e) => {
     const b = e.target.closest("[data-run]");
     if (!b) return;

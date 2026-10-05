@@ -53,6 +53,11 @@ CONTINUE_PROMPT = (
     "or submit the flag if you have found it."
 )
 MAX_NUDGES = 2
+CONTEXT_WARNING = (
+    "Context truncated: the prompt shrank from {before:,} to {after:,} tokens although the conversation "
+    "only grew, so the server is dropping earlier messages. Results will understate this model. "
+    "For Ollama, raise num_ctx (see agents/ollama/)."
+)
 
 
 class ToolAgent(Agent):
@@ -84,12 +89,20 @@ class ToolAgent(Agent):
         user_text: str | None = task.brief()
         results: list[ToolResult] = []
         nudges = 0
+        last_prompt = 0
+        warned_truncation = False
 
         while True:
             turn = session.send(user_text=user_text, tool_results=results)
             task.transcript.add_usage(turn.input_tokens, turn.output_tokens)
             task.log("model", model=turn.model, reasoning=turn.reasoning, text=turn.text,
                      input_tokens=turn.input_tokens, output_tokens=turn.output_tokens, stop=turn.stop)
+            # The conversation only ever grows, so a prompt that shrinks means the
+            # server dropped earlier messages to fit its context window.
+            if 0 < turn.input_tokens < last_prompt and not warned_truncation:
+                warned_truncation = True
+                task.log("note", text=CONTEXT_WARNING.format(before=last_prompt, after=turn.input_tokens))
+            last_prompt = max(last_prompt, turn.input_tokens)
             for note in turn.notes:
                 task.log("note", text=note)
             if turn.stop == "refusal":

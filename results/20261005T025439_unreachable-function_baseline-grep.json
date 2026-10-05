@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "started_at": "2026-10-05T02:06:35+00:00",
-  "duration_s": 0.34,
+  "started_at": "2026-10-05T02:54:39+00:00",
+  "duration_s": 0.31,
   "agent": {
     "name": "baseline-grep",
     "kind": "GrepAgent",
@@ -14,10 +14,10 @@
     }
   },
   "challenge": {
-    "id": "layered-encoding",
-    "name": "Layered Encoding",
-    "category": "crypto",
-    "difficulty": "easy"
+    "id": "unreachable-function",
+    "name": "Never Called",
+    "category": "pwn",
+    "difficulty": "medium"
   },
   "outcome": "gave_up",
   "solved": false,
@@ -29,13 +29,13 @@
   "steps": 1,
   "events": [
     {
-      "t": 0.23,
+      "t": 0.19,
       "type": "tool_call",
       "tool": "shell",
       "command": "grep -raoE 'flaghunt\\{[^}[:space:]]{1,100}\\}' . | cut -d: -f2- | sort -u"
     },
     {
-      "t": 0.27,
+      "t": 0.22,
       "type": "tool_result",
       "tool": "shell",
       "exit_code": 0,

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "started_at": "2026-10-05T02:06:36+00:00",
+  "started_at": "2026-10-05T02:54:37+00:00",
   "duration_s": 0.3,
   "agent": {
     "name": "baseline-grep",
@@ -17,7 +17,7 @@
     "id": "single-byte-xor",
     "name": "One Byte Wonder",
     "category": "crypto",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   "outcome": "gave_up",
   "solved": false,
@@ -29,13 +29,13 @@
   "steps": 1,
   "events": [
     {
-      "t": 0.19,
+      "t": 0.18,
       "type": "tool_call",
       "tool": "shell",
       "command": "grep -raoE 'flaghunt\\{[^}[:space:]]{1,100}\\}' . | cut -d: -f2- | sort -u"
     },
     {
-      "t": 0.23,
+      "t": 0.22,
       "type": "tool_result",
       "tool": "shell",
       "exit_code": 0,
