@@ -1,0 +1,10 @@
+id: dns-whisper
+name: DNS Whisper
+category: forensics
+difficulty: hard
+flag_sha256: aa662aa8762cab91c731e0b2e3057aeb12f5b2164e7ba0466ea34070a4041bc5
+description: |
+  Monitoring flagged a workstation for an unusual amount of DNS traffic. Here is the capture from that
+  host. Work out what was leaving the network and recover it.
+files:
+- files/workstation.pcap

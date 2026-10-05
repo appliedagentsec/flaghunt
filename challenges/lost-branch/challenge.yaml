@@ -1,0 +1,10 @@
+id: lost-branch
+name: Lost Branch
+category: forensics
+difficulty: medium
+flag_sha256: a5399dfdb60e7b611cc44ad417d40c3b85484466414e6e789d4eff77b16aea04
+description: |
+  Someone on the team says a deployment token was committed to this repository at some point and then
+  removed before anything was merged. The history on the main branch looks clean. Recover the token.
+files:
+- files/webservice.tar.gz

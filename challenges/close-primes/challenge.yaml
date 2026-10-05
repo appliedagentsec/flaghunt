@@ -1,0 +1,11 @@
+id: close-primes
+name: Close Primes
+category: crypto
+difficulty: medium
+flag_sha256: b10b9720859677000202ead0c4fb7fcfa0df8ea199eb4958ae3b75d78ce5a042
+description: |
+  A public key and a message that was encrypted with it. Whoever generated the key was in a hurry.
+  Recover the message.
+files:
+- files/public.pem
+- files/message.b64

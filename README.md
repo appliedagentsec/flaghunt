@@ -114,15 +114,29 @@ Change it with `--max-steps`, `--max-submissions` and `--time-limit`.
 |---|---|---|
 | `warmup-strings` | misc | easy |
 | `layered-encoding` | crypto | easy |
-| `single-byte-xor` | crypto | medium |
+| `cleartext-credentials` | forensics | easy |
+| `flag-checker` | rev | easy |
+| `single-byte-xor` | crypto | easy |
 | `hidden-archive` | forensics | medium |
+| `lost-branch` | forensics | medium |
+| `deleted-entry` | forensics | medium |
+| `quiet-pixels` | forensics | medium |
+| `close-primes` | crypto | medium |
+| `license-check` | rev | medium |
+| `forged-session` | web | medium |
+| `unreachable-function` | pwn | medium |
+| `dns-whisper` | forensics | hard |
+| `long-key-xor` | crypto | hard |
 
 Each challenge is a folder with a `challenge.yaml` and its files. Flags are
 stored only as SHA-256 hashes, so they can't leak from the repo. To add one:
 
 ```bash
-uv run flaghunt hash-flag 'flaghunt{your_flag}'   # paste into flag_sha256
+uv run flaghunt challenge new my-challenge --name "My Challenge" --category misc --difficulty easy
+uv run flaghunt challenge check my-challenge      # runs your reference solution in the sandbox
 ```
+
+See [challenges/README.md](challenges/README.md) for the full guide.
 
 ## Results website
 

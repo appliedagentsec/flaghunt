@@ -1,7 +1,7 @@
 id: single-byte-xor
 name: "One Byte Wonder"
 category: crypto
-difficulty: medium
+difficulty: easy
 flag_sha256: 20e6451c595044cb0db37a5e209aa7c3b01df83740569a2db11a94ef9e788144
 description: |
   An intercepted file was "encrypted" by XOR-ing every byte with the same secret

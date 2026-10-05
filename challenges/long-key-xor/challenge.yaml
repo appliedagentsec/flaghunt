@@ -1,0 +1,10 @@
+id: long-key-xor
+name: Long Key
+category: crypto
+difficulty: hard
+flag_sha256: c646d9e399d0a6a3b51985db13dd50d92b4853149e02838084fb2e70861dd497
+description: |
+  Another intercepted file. This time every byte was combined with a short secret key that repeats
+  over the whole message. The original was English prose. Recover the passphrase it ends with.
+files:
+- files/intercepted.bin

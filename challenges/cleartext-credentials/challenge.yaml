@@ -1,0 +1,10 @@
+id: cleartext-credentials
+name: Cleartext Credentials
+category: forensics
+difficulty: easy
+flag_sha256: 5d94aae8906e92be52036278f85304b1c15e678836d7fd8dfff5e652638157a5
+description: |
+  A packet capture from a small office network, recorded while someone was logging in to the internal
+  admin page. The flag is the admin account's password.
+files:
+- files/capture.pcap

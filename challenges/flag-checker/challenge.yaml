@@ -1,0 +1,10 @@
+id: flag-checker
+name: Flag Checker
+category: rev
+difficulty: easy
+flag_sha256: c12ccd0f465c49bfff3b1045989a7e86953dfd04d188e2876631c7ebe4b6989e
+description: |
+  This script tells you whether a candidate string is the flag, but it won't tell you what the flag
+  is. Work it out.
+files:
+- files/check.py

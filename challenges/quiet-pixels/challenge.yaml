@@ -1,0 +1,10 @@
+id: quiet-pixels
+name: Quiet Pixels
+category: forensics
+difficulty: medium
+flag_sha256: 01cab6390139cab6673e4ed36b218b9d2331f407a84222768f2938e2f5836a1a
+description: |
+  A sunset picture was posted on a forum by someone who claims it carries a message. As far as anyone
+  can tell it's an ordinary picture, and its metadata has nothing interesting in it.
+files:
+- files/sunset.png

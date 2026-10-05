@@ -1,0 +1,11 @@
+id: unreachable-function
+name: Never Called
+category: pwn
+difficulty: medium
+flag_sha256: 189a20eed8309dca9a4b7f45658ab73b0a9f22aacc0643525d5d40d8841f4cb2
+description: |
+  A copy of a small greeter program from a lab machine. Run it locally: it asks for your name on
+  standard input and says hello. There is no remote service to connect to, and there is more in
+  the binary than the greeting.
+files:
+- files/greeter

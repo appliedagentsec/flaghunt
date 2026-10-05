@@ -128,6 +128,51 @@ def cmd_results(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_challenge_new(args: argparse.Namespace) -> int:
+    from getpass import getpass
+
+    from .authoring import new_challenge
+
+    flag = args.flag or getpass("Flag (hidden, e.g. flaghunt{...}): ")
+    root, private = new_challenge(args.challenges_dir, args.private_dir, args.id, args.name,
+                                  args.category, args.difficulty, flag)
+    print(f"created {root}/challenge.yaml and {root}/files/")
+    print(f"private notes and solve.sh in {private}  (never commit these)")
+    print("\nNext: put the player's files in files/, list them in challenge.yaml, write the description,")
+    print(f"write {private / 'solve.sh'}, then run: flaghunt challenge check {args.id}")
+    return 0
+
+
+def cmd_challenge_check(args: argparse.Namespace) -> int:
+    from .authoring import check_challenge
+
+    if args.all:
+        roots = sorted(p.parent for p in args.challenges_dir.glob("*/challenge.yaml"))
+    elif args.ids:
+        roots = [args.challenges_dir / i for i in args.ids]
+    else:
+        print("name challenges to check, or use --all", file=sys.stderr)
+        return 2
+
+    failed = 0
+    for root in roots:
+        if not root.is_dir():
+            print(f"✗ {root.name}: no such challenge folder")
+            failed += 1
+            continue
+        report = check_challenge(root, args.private_dir / root.name, run_solution=not args.no_solution,
+                                 timeout=args.timeout)
+        mark = "✓" if report.ok else "✗"
+        print(f"{mark} {report.id}  (solution: {report.solution})")
+        for e in report.errors:
+            print(f"    error: {e}")
+        for w in report.warnings:
+            print(f"    warning: {w}")
+        failed += not report.ok
+    print(f"\n{len(roots) - failed}/{len(roots)} passed")
+    return 1 if failed else 0
+
+
 def cmd_site_build(args: argparse.Namespace) -> int:
     from .site import build_site
 
@@ -166,6 +211,27 @@ def build_parser() -> argparse.ArgumentParser:
 
     sub.add_parser("results", help="summarize saved transcripts").set_defaults(func=cmd_results)
 
+    from .authoring import CATEGORIES, DIFFICULTIES, default_private_dir
+
+    ch = sub.add_parser("challenge", help="tools for challenge authors")
+    ch.add_argument("--private-dir", type=Path, default=default_private_dir(),
+                    help="where flags and reference solutions live, outside the repo "
+                         "(default: $FLAGHUNT_PRIVATE_DIR or ~/Documents/flaghunt-private)")
+    ch_sub = ch.add_subparsers(dest="challenge_command", required=True)
+    ch_new = ch_sub.add_parser("new", help="scaffold a new challenge and hash its flag")
+    ch_new.add_argument("id", help="lowercase-with-hyphens, e.g. hidden-message")
+    ch_new.add_argument("--name", required=True)
+    ch_new.add_argument("--category", required=True, choices=CATEGORIES)
+    ch_new.add_argument("--difficulty", required=True, choices=DIFFICULTIES)
+    ch_new.add_argument("--flag", help="omit to type it hidden (keeps it out of your shell history)")
+    ch_new.set_defaults(func=cmd_challenge_new)
+    ch_check = ch_sub.add_parser("check", help="validate challenges and run their reference solutions")
+    ch_check.add_argument("ids", nargs="*")
+    ch_check.add_argument("--all", action="store_true")
+    ch_check.add_argument("--no-solution", action="store_true", help="only validate files, don't run solve.sh")
+    ch_check.add_argument("--timeout", type=int, default=120, help="seconds for each reference solution")
+    ch_check.set_defaults(func=cmd_challenge_check)
+
     site = sub.add_parser("site", help="build the static results website")
     site_sub = site.add_subparsers(dest="site_command", required=True)
     sb_build = site_sub.add_parser("build", help="build index.html from published transcripts")
@@ -185,7 +251,7 @@ def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     try:
         return args.func(args)
-    except (SandboxError, ValueError, FileNotFoundError) as e:
+    except (SandboxError, ValueError, FileNotFoundError, FileExistsError) as e:
         print(f"error: {e}", file=sys.stderr)
         return 1
     except KeyboardInterrupt:

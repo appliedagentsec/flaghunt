@@ -93,8 +93,8 @@ class Sandbox:
             subprocess.run([self.engine, "rm", "--force", self.name], capture_output=True)
             self._running = False
 
-    def put_files(self, paths: list[Path]) -> None:
-        """Copy files into the working directory, owned by the unprivileged agent user."""
+    def put_files(self, paths: list[Path], dest: str = WORKDIR) -> None:
+        """Copy files into the sandbox (default: the working directory), owned by the agent user."""
         if not paths:
             return
         buf = io.BytesIO()
@@ -102,7 +102,7 @@ class Sandbox:
             for p in paths:
                 tar.add(p, arcname=p.name)
         proc = subprocess.run(
-            [self.engine, "exec", "-i", self.name, "tar", "-x", "-C", WORKDIR],
+            [self.engine, "exec", "-i", self.name, "sh", "-c", f'mkdir -p "{dest}" && tar -x -C "{dest}"'],
             input=buf.getvalue(), capture_output=True,
         )
         if proc.returncode != 0:

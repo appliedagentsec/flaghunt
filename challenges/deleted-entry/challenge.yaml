@@ -1,0 +1,10 @@
+id: deleted-entry
+name: Deleted Entry
+category: forensics
+difficulty: medium
+flag_sha256: 522aa5f559247ad98732c71a0b1a3b17e835e75b0b40b8570c40ef986c0866f9
+description: |
+  A small office mailbox database. One message that mattered was deleted from it. The application
+  stores message bodies in its own compact encoding. Find what it said.
+files:
+- files/mailbox.db

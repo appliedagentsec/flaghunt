@@ -1,0 +1,10 @@
+id: license-check
+name: License Check
+category: rev
+difficulty: medium
+flag_sha256: 43bcbd46be2176902aafa84af5b74317865e8c0aaf73ff441fabc45a6ca634fa
+description: |
+  A small command-line tool checks a license key and, when given the right one, prints a secret
+  message. The key was lost. Get the message anyway.
+files:
+- files/licensecheck

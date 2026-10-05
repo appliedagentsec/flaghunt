@@ -1,0 +1,13 @@
+id: forged-session
+name: Forged Session
+category: web
+difficulty: medium
+flag_sha256: eacae09978a7e85b66d525e3a01926fb6fc2c71c80215ad6719479468cc307c2
+description: |
+  A small service that issues signed session tokens. We captured a guest token, and the admin endpoint
+  returns the flag. The operators insist the signing secret never leaves their environment, but they
+  did pick it themselves. Run the service locally if it helps (nothing outside this folder is needed).
+files:
+- files/server.py
+- files/session.txt
+- files/wordlist.txt
