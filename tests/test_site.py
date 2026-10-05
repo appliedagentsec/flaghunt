@@ -29,3 +29,19 @@ def test_transcript_mask_replaces_everywhere():
     t.log("tool_result", output="flaghunt{x} and again flaghunt{x}")
     t.mask("flaghunt{x}")
     assert json.dumps(t.to_dict()).count("flaghunt{x}") == 0
+
+
+def test_site_masks_flags_the_model_printed_but_never_submitted(tmp_path):
+    from flaghunt.challenge import hash_flag
+    ch = tmp_path / "challenges" / "c"
+    ch.mkdir(parents=True)
+    (ch / "challenge.yaml").write_text(
+        "id: c\nname: C\ncategory: misc\ndifficulty: easy\ndescription: d\n"
+        f"flag_sha256: {hash_flag('flaghunt{seen_not_sent}')}\n")
+    t = Transcript(agent={"name": "a"}, challenge={"id": "c", "name": "C", "category": "misc", "difficulty": "easy"})
+    t.log("model", model="m", reasoning="", text="The password is flaghunt{seen_not_sent}.",
+          input_tokens=1, output_tokens=1)
+    t.outcome = "gave_up"
+    t.save(tmp_path / "results")
+    html = build_site(tmp_path / "results", tmp_path / "site", challenges_dir=tmp_path / "challenges").read_text()
+    assert "seen_not_sent" not in html and MASKED_FLAG in html

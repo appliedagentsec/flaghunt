@@ -37,8 +37,10 @@ uv run flaghunt list              # see the challenges
 # Zero-cost baseline: a scripted agent that just greps for the flag
 uv run flaghunt run --agent examples/grep_agent.py:GrepAgent --all
 
-# A free local model (install Ollama, then `ollama pull qwen3.5:9b`)
-uv run flaghunt run --agent agents/local-qwen.yaml --all
+# A free local model through Ollama, with a 16k context window
+ollama pull qwen3.5:9b
+ollama create qwen3.5-9b-16k -f agents/ollama/qwen3.5-9b-16k.Modelfile
+uv run flaghunt run --agent agents/local-qwen3.5-9b.yaml --all
 
 # A hosted model with your own key
 cp .env.example .env               # add ANTHROPIC_API_KEY
@@ -137,6 +139,17 @@ uv run flaghunt challenge check my-challenge      # runs your reference solution
 ```
 
 See [challenges/README.md](challenges/README.md) for the full guide.
+
+## Local models
+
+Configs for several Ollama models are in `agents/local-*.yaml`, each with a
+matching Modelfile in `agents/ollama/` that sets a 16k context window. Ollama's
+default of 4,096 tokens silently drops earlier steps of a long attempt, and the
+harness notes in the transcript when it detects this.
+
+Models bigger than your GPU's memory spill into system RAM. Mixture-of-experts
+models such as `glm-4.7-flash` handle this well, but a 23 GB model on a 12 GB
+GPU with 30 GB of RAM can exhaust memory.
 
 ## Results website
 

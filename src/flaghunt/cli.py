@@ -176,7 +176,7 @@ def cmd_challenge_check(args: argparse.Namespace) -> int:
 def cmd_site_build(args: argparse.Namespace) -> int:
     from .site import build_site
 
-    out = build_site(args.results, args.out, args.repo_url)
+    out = build_site(args.results, args.out, args.repo_url, args.challenges_dir)
     print(f"wrote {out}")
     return 0
 

@@ -1,0 +1,5 @@
+# glm-4.7-flash with a 16k context window (Ollama's 4k default drops earlier steps).
+#   ollama pull glm-4.7-flash
+#   ollama create glm-4.7-flash-16k -f agents/ollama/glm-4.7-flash-16k.Modelfile
+FROM glm-4.7-flash
+PARAMETER num_ctx 16384

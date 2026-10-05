@@ -31,3 +31,12 @@ def test_missing_file_is_reported(tmp_path):
     )
     with pytest.raises(FileNotFoundError):
         Challenge.load(tmp_path)
+
+
+def test_flags_in_finds_only_the_real_flag(tmp_path):
+    (tmp_path / "challenge.yaml").write_text(
+        "id: t\nname: T\ncategory: misc\ndifficulty: easy\ndescription: d\n"
+        f"flag_sha256: {hash_flag('flaghunt{real}')}\n"
+    )
+    c = Challenge.load(tmp_path)
+    assert c.flags_in("try flaghunt{fake} then flaghunt{real}!") == {"flaghunt{real}"}

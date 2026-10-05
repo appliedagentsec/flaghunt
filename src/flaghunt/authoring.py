@@ -13,12 +13,11 @@ from pathlib import Path
 
 import yaml
 
-from .challenge import Challenge, hash_flag
+from .challenge import FLAG_RE, Challenge, hash_flag
 from .sandbox import Sandbox
 
 CATEGORIES = ("crypto", "forensics", "rev", "web", "pwn", "misc")
 DIFFICULTIES = ("easy", "medium", "hard")
-FLAG_RE = re.compile(r"flaghunt\{[^{}\s]{1,100}\}")
 ID_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 MAX_TOTAL_BYTES = 20 * 1024 * 1024
 SOLUTION_DIR = "/tmp/solution"

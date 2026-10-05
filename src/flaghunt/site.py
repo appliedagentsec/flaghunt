@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import Any
 
 from .agents.tool_agent import DEFAULT_SYSTEM_PROMPT
+from .challenge import Challenge, discover
 from .transcript import MASKED_FLAG, _replace
 
 REPO_URL = "https://github.com/appliedagentsec/flaghunt"
@@ -22,13 +23,15 @@ def _clip(text: str, limit: int) -> str:
     return text if len(text) <= limit else f"{text[:limit]}\n… [{len(text) - limit} more characters]"
 
 
-def _load_run(path: Path) -> dict[str, Any]:
+def _load_run(path: Path, challenges: dict[str, Challenge]) -> dict[str, Any]:
     run = json.loads(path.read_text())
     # Belt and braces: transcripts are masked when saved, but older ones may not be.
-    for e in run["events"]:
-        if e["type"] == "submit" and e.get("correct") and e["flag"] != MASKED_FLAG:
-            run["events"] = _replace(run["events"], e["flag"], MASKED_FLAG)
-            break
+    flags = {e["flag"] for e in run["events"] if e["type"] == "submit" and e.get("correct")}
+    challenge = challenges.get(run["challenge"]["id"])
+    if challenge:
+        flags |= challenge.flags_in(json.dumps(run))
+    for flag in flags - {MASKED_FLAG}:
+        run = _replace(run, flag, MASKED_FLAG)
     events = []
     for e in run["events"]:
         events.append({k: _clip(v, CLIPS[k]) if k in CLIPS and isinstance(v, str) else v for k, v in e.items()})
@@ -41,12 +44,14 @@ def _load_run(path: Path) -> dict[str, Any]:
     }
 
 
-def build_site(runs_dir: Path, out_dir: Path, repo_url: str = REPO_URL) -> Path:
+def build_site(runs_dir: Path, out_dir: Path, repo_url: str = REPO_URL,
+               challenges_dir: Path | None = None) -> Path:
     paths = sorted(runs_dir.glob("*.json"))
     if not paths:
         raise FileNotFoundError(f"no transcripts in {runs_dir}")
+    challenges = {c.id: c for c in discover(challenges_dir)} if challenges_dir else {}
     data = {
-        "runs": [_load_run(p) for p in paths],
+        "runs": [_load_run(p, challenges) for p in paths],
         "generated": date.today().strftime("%B %-d, %Y"),
         "system_prompt": DEFAULT_SYSTEM_PROMPT,
         "repo_url": repo_url.rstrip("/"),

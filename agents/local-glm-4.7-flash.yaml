@@ -1,0 +1,6 @@
+# Free: runs locally through Ollama with a 16k context window. Create it first:
+#   ollama pull glm-4.7-flash
+#   ollama create glm-4.7-flash-16k -f agents/ollama/glm-4.7-flash-16k.Modelfile
+name: glm-4.7-flash (local)
+provider: ollama
+model: glm-4.7-flash-16k

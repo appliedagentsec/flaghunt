@@ -1,0 +1,5 @@
+# qwen3.5:35b-a3b-q4_K_M with a 16k context window (Ollama's 4k default drops earlier steps).
+#   ollama pull qwen3.5:35b-a3b-q4_K_M
+#   ollama create qwen3.5-35b-a3b-16k -f agents/ollama/qwen3.5-35b-a3b-16k.Modelfile
+FROM qwen3.5:35b-a3b-q4_K_M
+PARAMETER num_ctx 16384

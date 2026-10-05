@@ -1,0 +1,5 @@
+# gemma4:12b with a 16k context window (Ollama's 4k default drops earlier steps).
+#   ollama pull gemma4:12b
+#   ollama create gemma4-12b-16k -f agents/ollama/gemma4-12b-16k.Modelfile
+FROM gemma4:12b
+PARAMETER num_ctx 16384

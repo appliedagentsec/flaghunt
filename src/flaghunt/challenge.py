@@ -7,12 +7,14 @@ trained on it gives away the answers.
 from __future__ import annotations
 
 import hashlib
+import re
 from dataclasses import dataclass, field
 from pathlib import Path
 
 import yaml
 
 FLAG_FORMAT = "flaghunt{...}"
+FLAG_RE = re.compile(r"flaghunt\{[^{}\s]{1,100}\}")
 
 
 def hash_flag(flag: str) -> str:
@@ -32,6 +34,10 @@ class Challenge:
 
     def check_flag(self, flag: str) -> bool:
         return hash_flag(flag) == self.flag_sha256
+
+    def flags_in(self, text: str) -> set[str]:
+        """Every string in `text` that is this challenge's correct flag."""
+        return {m for m in FLAG_RE.findall(text) if self.check_flag(m)}
 
     def file_paths(self) -> list[Path]:
         return [self.root / f for f in self.files]

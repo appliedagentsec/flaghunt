@@ -45,8 +45,9 @@ class Transcript:
         self.events.append(redact({"t": round(time.monotonic() - self._t0, 2), "type": type, **data}))
 
     def mask(self, secret: str) -> None:
-        """Replace every occurrence of a correct flag in the recorded events."""
+        """Replace every occurrence of a correct flag in the recorded events and error."""
         self.events = _replace(self.events, secret, MASKED_FLAG)
+        self.error = _replace(self.error, secret, MASKED_FLAG)
 
     def elapsed(self) -> float:
         return time.monotonic() - self._t0

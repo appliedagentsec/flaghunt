@@ -55,7 +55,7 @@ flag. A challenge isn't done until this passes.
 
 ```bash
 uv run flaghunt run --agent examples/grep_agent.py:GrepAgent --challenge hidden-message
-uv run flaghunt run --agent agents/local-qwen.yaml --challenge hidden-message
+uv run flaghunt run --agent agents/local-qwen3.5-9b.yaml --challenge hidden-message
 ```
 
 | Difficulty | Rough meaning |

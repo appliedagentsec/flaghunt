@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 from typing import Any, Callable
 
@@ -42,9 +43,6 @@ def run_challenge(
                 transcript.outcome = "refused"
                 transcript.error = f"refusal category: {e.category}"
             transcript.solved = task.solved
-            if task.correct_flag:
-                # Transcripts get published; never let one give away an answer.
-                transcript.mask(task.correct_flag)
     except (ProviderError, SandboxError) as e:
         # Setup problems: report them, but don't record a misleading result.
         transcript.outcome = "error"
@@ -54,5 +52,9 @@ def run_challenge(
         transcript.outcome = "error"
         transcript.error = f"{type(e).__name__}: {e}"
 
+    # Transcripts get published, so mask the answer wherever it appears, including
+    # runs where the model printed the flag but never submitted it.
+    for flag in challenge.flags_in(json.dumps([transcript.events, transcript.error])):
+        transcript.mask(flag)
     path = transcript.save(runs_dir) if runs_dir else None
     return transcript, path

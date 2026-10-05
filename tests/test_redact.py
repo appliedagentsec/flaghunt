@@ -17,3 +17,10 @@ def test_transcript_events_are_redacted(monkeypatch):
     t = Transcript(agent={"name": "a"}, challenge={"id": "c"})
     t.log("tool_result", output="leaked sk-ant-secret-value-0000000000000000")
     assert "secret-value" not in str(t.to_dict())
+
+
+def test_mask_covers_the_error_field():
+    t = Transcript(agent={"name": "a"}, challenge={"id": "c"})
+    t.error = "server could not parse: flaghunt{x} inside"
+    t.mask("flaghunt{x}")
+    assert "flaghunt{x}" not in str(t.to_dict())

@@ -1,0 +1,6 @@
+# Free: runs locally through Ollama with a 16k context window. Create it first:
+#   ollama pull qwen3.5:35b-a3b-q4_K_M
+#   ollama create qwen3.5-35b-a3b-16k -f agents/ollama/qwen3.5-35b-a3b-16k.Modelfile
+name: qwen3.5-35b-a3b (local)
+provider: ollama
+model: qwen3.5-35b-a3b-16k

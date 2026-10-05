@@ -1,0 +1,6 @@
+# Free: runs locally through Ollama with a 16k context window. Create it first:
+#   ollama pull gemma4:12b
+#   ollama create gemma4-12b-16k -f agents/ollama/gemma4-12b-16k.Modelfile
+name: gemma4-12b (local)
+provider: ollama
+model: gemma4-12b-16k

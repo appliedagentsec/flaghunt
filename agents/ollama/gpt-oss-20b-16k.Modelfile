@@ -1,0 +1,5 @@
+# gpt-oss:20b with a 16k context window (Ollama's 4k default drops earlier steps).
+#   ollama pull gpt-oss:20b
+#   ollama create gpt-oss-20b-16k -f agents/ollama/gpt-oss-20b-16k.Modelfile
+FROM gpt-oss:20b
+PARAMETER num_ctx 16384
