@@ -1,0 +1,5 @@
+# Python packages for the sandbox that Debian doesn't ship under the usual import
+# name. Hash-pinned so the sandbox build is reproducible; Dependabot proposes updates.
+pycryptodome==3.24.0 \
+    --hash=sha256:cf975cc3a0822a662ec2cdae85b38ad6f67654f9b48fbe02c5baae5999a6c18d \
+    --hash=sha256:9140779b40405476a799305b9ac1bcaab4ee6791dc3d38b12a9aa84ffbd6aabf

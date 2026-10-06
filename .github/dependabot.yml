@@ -1,0 +1,23 @@
+# Weekly update PRs for everything that's pinned. Review each one before merging:
+# a sandbox or dependency change can change benchmark results.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns: ["*"]
+  - package-ecosystem: uv
+    directory: /
+    schedule:
+      interval: weekly
+  - package-ecosystem: docker
+    directory: /sandbox
+    schedule:
+      interval: weekly
+  - package-ecosystem: pip
+    directory: /sandbox
+    schedule:
+      interval: weekly

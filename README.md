@@ -1,5 +1,8 @@
 # Flaghunt
 
+[![CI](https://github.com/appliedagentsec/flaghunt/actions/workflows/ci.yml/badge.svg)](https://github.com/appliedagentsec/flaghunt/actions/workflows/ci.yml)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/appliedagentsec/flaghunt/badge)](https://scorecard.dev/viewer/?uri=github.com/appliedagentsec/flaghunt)
+
 **A sandboxed harness for benchmarking AI agents on capture-the-flag challenges.**
 
 A project of the **Applied Agent Security Lab**.
